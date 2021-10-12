@@ -39,6 +39,7 @@ class Log extends React.Component<ILogProps, ILogState> {
     this.context.actions.setActiveMenu("log");
     this.context.actions.setContentTitle("Quản lý logs");
     const logRes = await LogService.getAllLogs();
+    console.log(logRes.data);
     if (logRes.success) {
       this.setState({ logs: logRes.data.logs, total: logRes.data.total });
     }
@@ -83,7 +84,7 @@ class Log extends React.Component<ILogProps, ILogState> {
                         this.props.history.push(`/users/${log.user._id}`)
                       }
                     >
-                      {log.user.username}
+                      {log.user?.username}
                     </Td>
                     <Td>{log.description}</Td>
                     <Td>{moment(log.createdAt).format("HH:mm DD/MM/YYYY")}</Td>
