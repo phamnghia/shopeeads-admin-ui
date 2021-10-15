@@ -80,13 +80,18 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
         UserService.getUserShop(userId),
         PlanService.getAllPlans(),
       ]);
-      this.setState({
-        user: userRes.data,
-        shops: shopRes.data,
-        plans: planRes.data,
-        plan: userRes.data.plan.planId,
-        expiredPlanTime: userRes.data.plan.expiredTime,
-      });
+      const newState: any = {};
+
+      newState.user = userRes.data;
+      newState.shops = shopRes.data;
+      newState.plans = planRes.data;
+
+      if (userRes.data.plan) {
+        newState.plan = userRes.data.plan._id;
+        newState.expiredPlanTime = userRes.data.plan.expiredTime
+      }
+
+      this.setState(newState);
     } catch (error) {
       alert("Có lỗi xảy ra");
     }
@@ -151,7 +156,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
     if (userRes.success) {
       this.setState({
         user: userRes.data,
-        plan: userRes.data.plan.planId,
+        plan: userRes.data.plan._id,
         expiredPlanTime: userRes.data.expiredTime,
         updatePlan: false,
       });
@@ -261,7 +266,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                 <div>
                   <div className="mb-2 flex flex-row">
                     <div className="mr-1 w-100 flex items-center">Gói</div>
-                    {this.state.user.plan?.planId ? (
+                    {this.state.user.plan?._id ? (
                       <SelectPicker
                         placeholder="Chọn gói"
                         searchable={false}
@@ -330,7 +335,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                     )}
                   </div>
                   <div className="flex justify-end">
-                    {this.state.user.plan?.planId ? (
+                    {this.state.user.plan?._id ? (
                       <div>
                         <Button
                           size="sm"
