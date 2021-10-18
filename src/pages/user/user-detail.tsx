@@ -86,6 +86,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
       newState.shops = shopRes.data;
       newState.plans = planRes.data;
 
+
       if (userRes.data.plan) {
         newState.plan = userRes.data.plan._id;
         newState.expiredPlanTime = userRes.data.plan.expiredTime
@@ -116,16 +117,6 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
 
   addPlan = async () => {
     const toast = createStandaloneToast();
-    // const expiredPlanTime = new Date(this.state.expiredPlanTime as Date);
-    // const currentTime = new Date(Date.now());
-    // if (expiredPlanTime.getTime() < currentTime.getTime() - 86400000) {
-    //   return toast({
-    //     status: "error",
-    //     description: "Thời gian gia hạn phải lớn hơn hiện tại",
-    //     position: "top",
-    //   });
-    // }
-
     const res = await UserService.addUserPlan(
       this.state.user._id,
       this.state.expiredPlanTime as Date,
@@ -276,9 +267,13 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                         labelKey="name"
                         valueKey="_id"
                         value={this.state.plan}
-                        onChange={(value) =>
-                          this.setState({ plan: value as string })
-                        }
+                        onChange={(value) => {
+                          const newState: any = {}
+                          const trialPlan = this.state.plans.find((plan: any) => plan._id === value);
+                          if (trialPlan.name === 'Gói dùng thử') newState.expiredPlanTime = moment().add(7, 'day').toDate();
+                          newState.plan = value as string;
+                          this.setState(newState)
+                        }}
                       />
                     ) : (
                       <SelectPicker
@@ -290,9 +285,15 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                         labelKey="name"
                         valueKey="_id"
                         value={this.state.plan}
-                        onChange={(value) =>
-                          this.setState({ plan: value as string })
-                        }
+                        onChange={(value) => {
+                          const newState: any = {}
+                          console.log('hello')
+                          const trialPlan = this.state.plans.find((plan: any) => plan._id === value);
+                          console.log(trialPlan.name);
+                          if (trialPlan.name === 'Gói dùng thử') newState.expiredPlanTime = moment().add(7, 'day').toDate();
+                          newState.plan = value as string;
+                          this.setState(newState)
+                        }}
                       />
                     )}
                   </div>
@@ -313,6 +314,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                             ? moment(this.state.expiredPlanTime).toDate()
                             : this.state.expiredPlanTime
                         }
+                        disabled={this.state.plans.find((plan: any) => plan._id === this.state.plan).name === 'Gói dùng thử'}
                         onChange={(value) => {
                           this.setState({
                             expiredPlanTime: value,

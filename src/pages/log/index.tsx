@@ -9,11 +9,11 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 
 export interface ILogProps extends RouteComponentProps {}
 
-interface ILog {
-  _id: string;
-  description: string;
-  createdAt: Date;
-}
+// interface ILog {
+//   _id: string;
+//   description: string;
+//   createdAt: Date;
+// }
 
 export interface ILogState {
   logs: any;
