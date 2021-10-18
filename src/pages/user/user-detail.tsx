@@ -23,6 +23,8 @@ import PlanService from "../../services/plan";
 import { calendarLocale } from "../../config/index";
 import moment from "moment";
 import CAlertDialog from "./components/alert-dialog";
+import { Pagination } from "rsuite";
+import LogService from "../../services/log";
 
 export interface IUserDetailProps
   extends RouteComponentProps<{ userId: string }> {}
@@ -36,6 +38,9 @@ export interface IUserDetailState {
   updatePlan: boolean;
   isShowDeletePlan: boolean;
   newPass: string;
+  logs: any[];
+  total: number;
+  page: number;
 }
 
 class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
@@ -58,7 +63,9 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
       isShowDeletePlan: false,
       newPass: "",
       updatePlan: false,
-      
+      total: 0,
+      page: 1,
+      logs: []
     };
   }
 
@@ -75,16 +82,19 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
   async componentDidMount() {
     try {
       const userId = this.props.match.params.userId;
-      const [userRes, shopRes, planRes] = await Promise.all([
+      const [userRes, shopRes, planRes, logRes] = await Promise.all([
         UserService.getUser(userId),
         UserService.getUserShop(userId),
         PlanService.getAllPlans(),
+        LogService.getLogsByUser(userId),
       ]);
       const newState: any = {};
 
       newState.user = userRes.data;
       newState.shops = shopRes.data;
       newState.plans = planRes.data;
+      newState.logs = logRes.data.logs;
+      newState.total = logRes.data.total;
 
 
       if (userRes.data.plan) {
@@ -179,6 +189,19 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
     }
   };
 
+  changePage = async (page: number) => {
+    console.log(page)
+    const logRes = await LogService.getLogsByUser(this.props.match.params.userId, page);
+
+    if (logRes.success) {
+      this.setState({
+        logs: logRes.data.logs,
+        total: logRes.data.total,
+        page: page,
+      });
+    }
+  };
+
   public render() {
     return (
       <Layout>
@@ -188,8 +211,8 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
             {this.state.user.username}
           </span>
         </div>
-        <div className="">
-          <div className="mb-4">
+        <div className="flex flex-row gap-4 mb-4">
+          <div>
             <div className="p-2 border border-gray-200 mb-4 w-500">
               <div className="font-semibold text-lg">Thông tin cá nhân</div>
               <Divider className="my-2" />
@@ -378,10 +401,10 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
             </div>
           </div>
           <div style={{ width: "100%" }}>
-            <div className="p-2 border border-gray-200">
+            <div className="p-2 border border-gray-200" style={{ height: '100%'}}>
               <div className="font-semibold text-lg">Danh sách của hàng</div>
               <Divider className="my-2" />
-              <div>
+              <div style={{ height: '100%'}}>
                 <Table variant="simple">
                   <Thead>
                     <Tr>
@@ -417,6 +440,58 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
               </div>
             </div>
           </div>
+        </div>
+        <div className="font-semibold mb-4 text-lg">
+          {this.context.states.contentTitle}
+        </div>
+        <div>
+          <Table variant="simple" colorScheme="blue" className="mb-4">
+            <Thead>
+              <Tr>
+                <Th>#</Th>
+                <Th>Người dùng</Th>
+                <Th>Nội dung</Th>
+                <Th>Thời gian</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {this.state.logs.map((log: any, index: number) => {
+                return (
+                  <Tr key={index}>
+                    <Td>{log.type}</Td>
+                    <Td
+                      className="cursor-pointer hover:text-blue-500 hover:underline"
+                      onClick={() =>
+                        this.props.history.push(`/users/${log.user._id}`)
+                      }
+                    >
+                      {log.user?.username}
+                    </Td>
+                    <Td>{log.description}</Td>
+                    <Td>{moment(log.createdAt).format("HH:mm DD/MM/YYYY")}</Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </div>
+        <div className="flex justify-end">
+          <Pagination
+            layout={["total", "|", "pager"]}
+            className="px-5 mr-5"
+            size="md"
+            prev
+            last
+            next
+            locale={{
+              total: `Tổng: ${this.state.total}`,
+            }}
+            first
+            total={this.state.total}
+            activePage={this.state.page}
+            limit={5}
+            onChangePage={(page) => this.changePage(page)}
+          />
         </div>
       </Layout>
     );

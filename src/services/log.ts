@@ -9,6 +9,14 @@ const LogService = {
     } catch (error) {
       return error;
     }
+  },
+  async getLogsByUser(userId: string, page?: number, limit?: number) {
+      const res = await axios.post(`/logs/get-logs-by-user?page=${page || null}&limit=${limit || null}`, {
+        userId,
+      })
+
+      console.log(res);
+      return res.data;
   }
 }
 

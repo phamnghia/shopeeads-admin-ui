@@ -16,7 +16,7 @@ export interface ILogProps extends RouteComponentProps {}
 // }
 
 export interface ILogState {
-  logs: any;
+  logs: any[];
   total: number;
   page: number;
 }
