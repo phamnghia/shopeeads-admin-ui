@@ -310,7 +310,6 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                         value={this.state.plan}
                         onChange={(value) => {
                           const newState: any = {}
-                          console.log('hello')
                           const trialPlan = this.state.plans.find((plan: any) => plan._id === value);
                           console.log(trialPlan.name);
                           if (trialPlan.name === 'Gói dùng thử') newState.expiredPlanTime = moment().add(7, 'day').toDate();
@@ -337,7 +336,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                             ? moment(this.state.expiredPlanTime).toDate()
                             : this.state.expiredPlanTime
                         }
-                        disabled={this.state.plans.find((plan: any) => plan._id === this.state.plan).name === 'Gói dùng thử'}
+                        disabled={this.state.plans.find((plan: any) => plan._id === this.state.plan)?.name === 'Gói dùng thử'}
                         onChange={(value) => {
                           this.setState({
                             expiredPlanTime: value,
@@ -353,6 +352,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                         style={{ width: 200 }}
                         cleanable={false}
                         value={this.state.expiredPlanTime}
+                        disabled={this.state.plans.find((plan: any) => plan._id === this.state.plan)?.name === 'Gói dùng thử'}
                         onChange={(value) => {
                           this.setState({ expiredPlanTime: value });
                         }}
