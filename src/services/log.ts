@@ -15,7 +15,6 @@ const LogService = {
         userId,
       })
 
-      console.log(res);
       return res.data;
   }
 }

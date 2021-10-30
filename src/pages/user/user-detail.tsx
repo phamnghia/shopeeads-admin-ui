@@ -190,7 +190,6 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
   };
 
   changePage = async (page: number) => {
-    console.log(page)
     const logRes = await LogService.getLogsByUser(this.props.match.params.userId, page);
 
     if (logRes.success) {
@@ -311,7 +310,6 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                         onChange={(value) => {
                           const newState: any = {}
                           const trialPlan = this.state.plans.find((plan: any) => plan._id === value);
-                          console.log(trialPlan.name);
                           if (trialPlan.name === 'Gói dùng thử') newState.expiredPlanTime = moment().add(7, 'day').toDate();
                           newState.plan = value as string;
                           this.setState(newState)
