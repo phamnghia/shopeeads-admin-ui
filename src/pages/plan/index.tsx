@@ -21,12 +21,14 @@ import GearIcon from "@rsuite/icons/Gear";
 import moment from "moment";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import UserService from "../../services/user";
+import { ArrowUpIcon, ArrowDownIcon } from "@chakra-ui/icons";
 
 export interface IPlanProps extends RouteComponentProps {}
 
 export interface IPlanState {
   plans: any[];
   users: any[];
+  sortType: "asc" | "desc";
 }
 
 class Plan extends React.Component<IPlanProps, IPlanState> {
@@ -39,6 +41,7 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
     this.state = {
       plans: [],
       users: [],
+      sortType: "asc",
     };
   }
 
@@ -49,20 +52,59 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
     const res = await UserService.countUserByPlan();
 
     if (res.success) {
-      const userHavePlan = res.data.filter((user: any) => user.plan)
-      this.setState({ plans: userHavePlan });
-      this.getUserByPlan(userHavePlan[0]._id.plan)
+      const userHavePlan = res.data.filter((user: any) => user.name).sort((prevUser: any, currUser: any) => {
+        return prevUser.plan[0].price - currUser.plan[0].price
+      });
+      this.setState({ plans: userHavePlan});
+      this.getUserByPlan(userHavePlan[0]._id.plan);
     }
   }
 
   async getUserByPlan(planId: string) {
     const res = await UserService.getUserByPlan(planId);
-    
+
     if (res.success) {
-      this.setState({ users: res.data })
+      this.setState({ users: res.data });
     }
   }
-  
+
+  sortUser() {
+    if (this.state.sortType === "asc") {
+      const users = this.state.users.sort((prevUser: any, currUser) => {
+        return (
+          Math.round(
+            (moment(prevUser.plan.expiredTime as Date).unix() -
+              moment().unix()) /
+              (60 * 60 * 24)
+          ) -
+          Math.round(
+            (moment(currUser.plan.expiredTime as Date).unix() -
+              moment().unix()) /
+              (60 * 60 * 24)
+          )
+        );
+      });
+      this.setState({ users: users });
+    } else {
+      const users = this.state.users.sort((prevUser: any, currUser) => {
+        return (
+          Math.round(
+            (moment(currUser.plan.expiredTime as Date).unix() -
+              moment().unix()) /
+              (60 * 60 * 24)
+          ) -
+          Math.round(
+            (moment(prevUser.plan.expiredTime as Date).unix() -
+              moment().unix()) /
+              (60 * 60 * 24)
+          )
+        );
+      });
+      this.setState({ users: users });
+    }
+  }
+
+
 
   public render() {
     return (
@@ -71,12 +113,20 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
           {this.context.states.contentTitle}
         </div>
         <div>
-          <Tabs isManual variant="enclosed" colorScheme="blue" isLazy onChange={(index) => this.getUserByPlan(this.state.plans[index]._id.plan)}>
+          <Tabs
+            isManual
+            variant="enclosed"
+            colorScheme="blue"
+            isLazy
+            onChange={(index) =>
+              this.getUserByPlan(this.state.plans[index]._id.plan)
+            }
+          >
             <TabList>
               {this.state.plans.map((plan: any, index: number) => {
                 return (
                   <Tab key={index} id={plan._id.plan}>
-                    {plan.plan ? plan.plan : 'Gói dùng thử'} ({plan.sum})
+                    {plan.name} ({plan.sum})
                   </Tab>
                 );
               })}
@@ -93,7 +143,17 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
                           <Th>Số điện thoại</Th>
                           <Th>Tên gói sử dụng</Th>
                           <Th>Ngày hết hạn gói</Th>
-                          <Th>Số ngày khả dụng</Th>
+                          <Th>
+                            Số ngày khả dụng{" "}
+                            {this.state.sortType === 'desc' && <ArrowUpIcon color="blue" onClick={() => {
+                              this.setState({ sortType: 'asc' });
+                              this.sortUser()
+                            }} />}
+                            {this.state.sortType === 'asc' && <ArrowDownIcon color="blue" onClick={() => {
+                              this.setState({ sortType: 'desc' });
+                              this.sortUser()
+                            }} />}
+                          </Th>
                           <Th className="flex justify-center">Hành động</Th>
                         </Tr>
                       </Thead>
@@ -120,7 +180,15 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
                                   <div>-</div>
                                 )}
                               </Td>
-                              <Td>{Math.round((moment(user.plan.expiredTime as Date).unix() - moment().unix()) / (60*60*24))}</Td>
+                              <Td>
+                                {Math.round(
+                                  (moment(
+                                    user.plan.expiredTime as Date
+                                  ).unix() -
+                                    moment().unix()) /
+                                    (60 * 60 * 24)
+                                )}
+                              </Td>
                               <Td className="flex justify-center">
                                 <Button
                                   leftIcon={<GearIcon />}
