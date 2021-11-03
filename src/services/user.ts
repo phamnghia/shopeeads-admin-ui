@@ -73,6 +73,17 @@ const UserService = {
     } catch (error) {
       return error;
     }
+  },
+  async getUserByPlan(planId: string) {
+    try {
+      const res = await axios.post('/users/list-user-by-plan', {
+        planId: planId
+      });
+
+      return res.data;
+    } catch (error) {
+      return error;
+    }
   }
 }
 

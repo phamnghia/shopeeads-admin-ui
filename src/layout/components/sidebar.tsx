@@ -3,7 +3,7 @@ import * as React from "react";
 import { IMenuItem } from "../../interface";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AppContext } from "../../context/app";
-import { Peoples, Calendar } from "@rsuite/icons";
+import { Peoples, Calendar, TextImage } from "@rsuite/icons";
 
 export interface ISideBarProps extends RouteComponentProps {}
 
@@ -25,6 +25,12 @@ class SideBar extends React.Component<ISideBarProps, ISideBarState> {
           text: "Quản lý người dùng",
           uri: "/users",
           icon: Peoples,
+        },
+        {
+          id: "plan",
+          text: "Danh sách sử dụng gói",
+          uri: "/plan",
+          icon: TextImage
         },
         {
           id: "log",

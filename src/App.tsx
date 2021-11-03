@@ -2,7 +2,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import checkAuth from "./components/checkAuth";
 import Login from "./pages/auth/login";
 import Log from "./pages/log";
-// import Plan from "./pages/plan/index";
+import Plan from "./pages/plan/index";
 import User from "./pages/user";
 import UserDetail from "./pages/user/user-detail";
 
@@ -14,6 +14,7 @@ function App() {
         <Route path="/users" exact component={checkAuth(User)} />
         <Route path="/users/:userId" exact component={checkAuth(UserDetail)} />
         <Route path="/log" exact component={checkAuth(Log)} />
+        <Route path="/plan" exact component={checkAuth(Plan)} />
         <Route exact>
           <Redirect to="/users" />
         </Route>
