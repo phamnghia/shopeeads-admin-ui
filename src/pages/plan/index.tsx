@@ -26,7 +26,6 @@ export interface IPlanProps extends RouteComponentProps {}
 
 export interface IPlanState {
   plans: any[];
-  tabId: string;
   users: any[];
 }
 
@@ -39,7 +38,6 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
 
     this.state = {
       plans: [],
-      tabId: "",
       users: [],
     };
   }
@@ -48,11 +46,12 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
     this.context.actions.setContentTitle("Danh sách sử dụng gói");
     this.context.actions.setActiveMenu("plan");
 
-    const res = await PlanService.getAllPlans();
+    const res = await UserService.countUserByPlan();
 
     if (res.success) {
-      this.setState({ plans: res.data });
-      this.getUserByPlan(res.data[0]._id)
+      const userHavePlan = res.data.filter((user: any) => user.plan)
+      this.setState({ plans: userHavePlan });
+      this.getUserByPlan(userHavePlan[0]._id.plan)
     }
   }
 
@@ -60,10 +59,10 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
     const res = await UserService.getUserByPlan(planId);
     
     if (res.success) {
-      console.log(res.data);
       this.setState({ users: res.data })
     }
   }
+  
 
   public render() {
     return (
@@ -72,12 +71,12 @@ class Plan extends React.Component<IPlanProps, IPlanState> {
           {this.context.states.contentTitle}
         </div>
         <div>
-          <Tabs isManual variant="enclosed" colorScheme="blue" isLazy onChange={(index) => this.getUserByPlan(this.state.plans[index]._id)}>
+          <Tabs isManual variant="enclosed" colorScheme="blue" isLazy onChange={(index) => this.getUserByPlan(this.state.plans[index]._id.plan)}>
             <TabList>
               {this.state.plans.map((plan: any, index: number) => {
                 return (
-                  <Tab key={index} id={plan._id}>
-                    {plan.name}
+                  <Tab key={index} id={plan._id.plan}>
+                    {plan.plan ? plan.plan : 'Gói dùng thử'} ({plan.sum})
                   </Tab>
                 );
               })}

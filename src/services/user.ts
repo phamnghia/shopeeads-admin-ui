@@ -84,6 +84,15 @@ const UserService = {
     } catch (error) {
       return error;
     }
+  },
+  async countUserByPlan() {
+    try {
+      const res = await axios.post('/users/count-user-by-plan');
+
+      return res.data;
+    } catch (error) {
+      return error
+    }
   }
 }
 
