@@ -1,8 +1,6 @@
 import * as React from "react";
-import checkAuth from "../../components/checkAuth";
 import Layout from "../../layout/default";
 import { AppContext } from "../../context/app";
-import PlanService from "../../services/plan";
 import {
   Tabs,
   TabList,

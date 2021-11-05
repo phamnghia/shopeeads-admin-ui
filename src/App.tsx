@@ -5,6 +5,7 @@ import Log from "./pages/log";
 import Plan from "./pages/plan/index";
 import User from "./pages/user";
 import UserDetail from "./pages/user/user-detail";
+import ErrorCampaign from "./pages/errorCampaign/index";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/users/:userId" exact component={checkAuth(UserDetail)} />
         <Route path="/log" exact component={checkAuth(Log)} />
         <Route path="/plan" exact component={checkAuth(Plan)} />
+        <Route path="/error-campaign" exact component={checkAuth(ErrorCampaign)} />
         <Route exact>
           <Redirect to="/users" />
         </Route>

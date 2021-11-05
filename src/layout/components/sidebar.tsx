@@ -3,7 +3,7 @@ import * as React from "react";
 import { IMenuItem } from "../../interface";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AppContext } from "../../context/app";
-import { Peoples, Calendar, TextImage } from "@rsuite/icons";
+import { Peoples, Calendar, TextImage, ExpiredRound  } from "@rsuite/icons";
 
 export interface ISideBarProps extends RouteComponentProps {}
 
@@ -38,6 +38,12 @@ class SideBar extends React.Component<ISideBarProps, ISideBarState> {
           uri: "/log",
           icon: Calendar
         },
+        {
+          id: 'error-campaign',
+          text: 'Chiến dịch lỗi',
+          uri: "/error-campaign",
+          icon: ExpiredRound
+        }
       ],
     };
   }
@@ -62,8 +68,8 @@ class SideBar extends React.Component<ISideBarProps, ISideBarState> {
     });
     return (
       <div>
-        <Heading size="lg" className="px-2 py-3 mb-5 text-center text-blue-600">
-          AntsoftAdmin
+        <Heading style={{ fontSize: 26 }} className="px-2 py-3 mb-5 text-center text-blue-600">
+          ShopeeAds Admin
         </Heading>
         <div>{menuItems}</div>
       </div>
