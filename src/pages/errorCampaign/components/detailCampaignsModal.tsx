@@ -45,7 +45,7 @@ export default class DetailCampainsModal extends React.Component<
       <Modal
         isOpen={this.props.isOpen}
         onClose={() => this.props.onClose()}
-        size="2xl"
+        size="3xl"
       >
         <ModalOverlay />
         <ModalContent>
@@ -56,6 +56,8 @@ export default class DetailCampainsModal extends React.Component<
               <Thead>
                 <Tr>
                   <Th>Campaign Id</Th>
+                  <Th>Shop Id</Th>
+                  <Th>Cửa hàng</Th>
                   <Th>Kiểu</Th>
                   <Th>Thời gian lỗi</Th>
                 </Tr>
@@ -65,6 +67,8 @@ export default class DetailCampainsModal extends React.Component<
                   return (
                     <Tr key={index} className="hover:bg-blue-100">
                       <Td>{campaign.campaignId}</Td>
+                      <Td>{campaign.shop.shopId}</Td>
+                      <Td>{campaign.shop.username}</Td>
                       <Td>{campaign.type}</Td>
                       <Td>
                         {moment(campaign.lastCheckedAt).format(
