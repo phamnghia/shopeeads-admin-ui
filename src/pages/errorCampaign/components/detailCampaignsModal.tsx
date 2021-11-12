@@ -16,8 +16,9 @@ import {
   Td,
 } from "@chakra-ui/react";
 import moment from "moment";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-export interface IDetailCampainsModalProps {
+export interface IDetailCampainsModalProps extends RouteComponentProps {
   isOpen: boolean;
   onClose: Function;
   data: any[];
@@ -25,7 +26,8 @@ export interface IDetailCampainsModalProps {
 
 export interface IDetailCampainsModalState {}
 
-export default class DetailCampainsModal extends React.Component<
+
+class DetailCampainsModal extends React.Component<
   IDetailCampainsModalProps,
   IDetailCampainsModalState
 > {
@@ -96,3 +98,5 @@ export default class DetailCampainsModal extends React.Component<
     );
   }
 }
+
+export default withRouter(DetailCampainsModal);
