@@ -40,7 +40,7 @@ class SideBar extends React.Component<ISideBarProps, ISideBarState> {
         },
         {
           id: 'error-campaign',
-          text: 'Chiến dịch lỗi',
+          text: 'Lỗi hệ thống',
           uri: "/error-campaign",
           icon: ExpiredRound
         }
