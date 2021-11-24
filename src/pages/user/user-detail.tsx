@@ -25,6 +25,7 @@ import moment from "moment";
 import CAlertDialog from "./components/alert-dialog";
 import { Pagination } from "rsuite";
 import LogService from "../../services/log";
+import AdminService from "../../services/admin";
 
 export interface IUserDetailProps
   extends RouteComponentProps<{ userId: string }> {}
@@ -41,6 +42,8 @@ export interface IUserDetailState {
   logs: any[];
   total: number;
   page: number;
+  admins: any[];
+  admin: string;
 }
 
 class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
@@ -65,7 +68,9 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
       updatePlan: false,
       total: 0,
       page: 1,
-      logs: []
+      logs: [],
+      admins: [],
+      admin: ''
     };
   }
 
@@ -82,11 +87,12 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
   async componentDidMount() {
     try {
       const userId = this.props.match.params.userId;
-      const [userRes, shopRes, planRes, logRes] = await Promise.all([
+      const [userRes, shopRes, planRes, logRes, adminRes] = await Promise.all([
         UserService.getUser(userId),
         UserService.getUserShop(userId),
         PlanService.getAllPlans(),
         LogService.getLogsByUser(userId),
+        AdminService.listAdmin(),
       ]);
       const newState: any = {};
 
@@ -95,11 +101,15 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
       newState.plans = planRes.data;
       newState.logs = logRes.data.logs;
       newState.total = logRes.data.total;
-
+      newState.admins = adminRes.data;
 
       if (userRes.data.plan) {
         newState.plan = userRes.data.plan._id;
         newState.expiredPlanTime = userRes.data.plan.expiredTime
+      }
+
+      if (userRes.data.admin) {
+        this.setState({ admin: userRes.data?.admin._id})
       }
 
       this.setState(newState);
@@ -268,6 +278,56 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                     >
                       Lưu
                     </Button>
+                  </div>
+                </FormControl>
+                <FormControl className="mb-2" style={{ width: 300 }}>
+                  <FormLabel>Admin quản lý</FormLabel>
+                  <div>
+
+                    {/* <SelectPicker data={} /> */}
+                    {/* <Input
+                      value={this.state.newPass}
+                      onChange={(event) =>
+                        this.setState({
+                          newPass: event.target.value,
+                        })
+                      }
+                      type="password"
+                      size="sm"
+                      className="mr-1"
+                    />
+                    <Button
+                      className="float-right"
+                      colorScheme="blue"
+                      size="sm"
+                      onClick={() => this.changePassHandler()}
+                    >
+                      Lưu
+                    </Button> */}
+                    <SelectPicker 
+                      data={this.state.admins} 
+                      cleanable={false} 
+                      searchable={false} 
+                      labelKey="username" 
+                      valueKey="_id"
+                      value={this.state.admin}
+                      placeholder="Chọn admin quản lý"
+                      onChange={async (value) => { 
+                        this.setState({ admin: value as string });
+                        const res = await UserService.updateUser(this.props.match.params.userId, {
+                          admin: this.state.admins.find((admin: any) => admin._id === value)
+                        })
+                        if (res.success) {
+                          const toast = createStandaloneToast();
+                          toast({
+                            status: 'success',
+                            description: 'Cập nhật admin thành công',
+                            title: 'Thông báo',
+                            position: 'top'
+                          })
+                        }
+                      }}
+                    />
                   </div>
                 </FormControl>
               </div>
