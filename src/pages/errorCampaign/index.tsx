@@ -59,10 +59,7 @@ export default withRouter(
         this.setState({ errorCampaigns: campaignRes.data });
       }
 
-      console.log(shopRes);
-
       if (shopRes.success) {
-        console.log(shopRes.data);
         this.setState({ errorShops: shopRes.data });
       }
     }
