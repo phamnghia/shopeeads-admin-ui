@@ -93,6 +93,15 @@ const UserService = {
     } catch (error) {
       return error
     }
+  },
+  async updateUser(userId: string, data: any) {
+    try {
+      const res = await axios.put(`/users/${userId}`, data);
+
+      return res.data;
+    } catch (error) {
+      
+    }
   }
 }
 

@@ -83,6 +83,7 @@ export default withRouter(
                       <Tr>
                         <Th>Tên đăng nhập</Th>
                         <Th>Số chiến dịch lỗi</Th>
+                        <Th>Admin quản lý</Th>
                         <Th className="flex justify-end">
                           <div className="flex justify-center w-200">
                             Hành động
@@ -103,9 +104,10 @@ export default withRouter(
                                   )
                                 }
                               >
-                                {campaign.user}
+                                {campaign.user[0].username}
                               </Td>
                               <Td>{campaign.errorCampaigns.length}</Td>
+                              <Td>{campaign.user[0].admin?.username}</Td>
                               <Td className="flex justify-end">
                                 <div className="flex justify-center w-200">
                                   <Button
@@ -136,6 +138,7 @@ export default withRouter(
                       <Tr>
                         <Th>Tên cửa hàng</Th>
                         <Th>Tên đăng nhập</Th>
+                        <Th>Admin quản lý</Th>
                         <Th>Lỗi</Th>
                       </Tr>
                     </Thead>
@@ -152,6 +155,7 @@ export default withRouter(
                             >
                               {shop.username}
                             </Td>
+                            <Td>{shop.user[0].admin?.username}</Td>
                             <Td>
                               {shop.logs && shop.logs.length > 0
                                 ? shop.logs[0]
