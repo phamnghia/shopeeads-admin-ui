@@ -91,7 +91,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
         UserService.getUser(userId),
         UserService.getUserShop(userId),
         PlanService.getAllPlans(),
-        LogService.getLogsByUser(userId),
+        LogService.getLogsByUser(userId, 1, 10),
         AdminService.listAdmin(),
       ]);
       const newState: any = {};
@@ -158,6 +158,12 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
         status: "success",
         position: "top",
       });
+    } else {
+      toast({
+        description: res.message,
+        status: "error",
+        position: "top",
+      });
     }
   };
 
@@ -200,7 +206,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
   };
 
   changePage = async (page: number) => {
-    const logRes = await LogService.getLogsByUser(this.props.match.params.userId, page);
+    const logRes = await LogService.getLogsByUser(this.props.match.params.userId, page, 10);
 
     if (logRes.success) {
       this.setState({
@@ -547,7 +553,7 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
             first
             total={this.state.total}
             activePage={this.state.page}
-            limit={5}
+            limit={10}
             onChangePage={(page) => this.changePage(page)}
           />
         </div>
