@@ -44,10 +44,10 @@ class UserTable extends React.Component<IUserTableProps, IUserTableState> {
                   <Td>{user.email}</Td>
                   <Td>{user.phone}</Td>
                   <Td>
-                    {user.plan._id ? user.plan.name : <span>-</span>}
+                    {user.plan && user.plan._id ? user.plan.name : <span>-</span>}
                   </Td>
                   <Td>
-                    {user.plan.expiredTime ? (
+                    {user.plan && user.plan.expiredTime ? (
                       moment(user.plan.expiredTime).format("DD/MM/YYYY")
                     ) : (
                       <div>-</div>
