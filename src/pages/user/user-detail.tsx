@@ -286,30 +286,15 @@ class UserDetail extends React.Component<IUserDetailProps, IUserDetailState> {
                     </Button>
                   </div>
                 </FormControl>
+
+                <FormControl className="mb-2" style={{ width: 300 }}>
+                  <FormLabel>Ngày tạo tài khoản</FormLabel>
+                  <div>{moment(this.state.user.createdAt).format("DD/MM/YYYY")}</div>
+                </FormControl>
+
                 <FormControl className="mb-2" style={{ width: 300 }}>
                   <FormLabel>Admin quản lý</FormLabel>
                   <div>
-
-                    {/* <SelectPicker data={} /> */}
-                    {/* <Input
-                      value={this.state.newPass}
-                      onChange={(event) =>
-                        this.setState({
-                          newPass: event.target.value,
-                        })
-                      }
-                      type="password"
-                      size="sm"
-                      className="mr-1"
-                    />
-                    <Button
-                      className="float-right"
-                      colorScheme="blue"
-                      size="sm"
-                      onClick={() => this.changePassHandler()}
-                    >
-                      Lưu
-                    </Button> */}
                     <SelectPicker 
                       data={this.state.admins} 
                       cleanable={false} 

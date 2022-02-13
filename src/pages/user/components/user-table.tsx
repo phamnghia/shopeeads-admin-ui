@@ -33,6 +33,7 @@ class UserTable extends React.Component<IUserTableProps, IUserTableState> {
               <Th>Số điện thoại</Th>
               <Th>Gói</Th>
               <Th>Ngày hết hạn</Th>
+              <Th>Ngày tạo tài khoản</Th>
               <Th className="flex justify-center">Hành động</Th>
             </Tr>
           </Thead>
@@ -52,6 +53,9 @@ class UserTable extends React.Component<IUserTableProps, IUserTableState> {
                     ) : (
                       <div>-</div>
                     )}
+                  </Td>
+                  <Td>
+                    {moment(user.createdAt).format("DD/MM/YYYY")}
                   </Td>
                   <Td className="flex justify-center">
                     <Button
